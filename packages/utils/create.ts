@@ -64,7 +64,7 @@ function createBEM(prefixName: string) {
   };
 }
 
-function createNamespace(name: string) {
+export function createNamespace(name: string) {
   const prefixName = `c-${name}`;
   return createBEM(prefixName);
 }
