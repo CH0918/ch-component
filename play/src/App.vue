@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>11</div>
+  <c-icon size="16" color="red">haha</c-icon>
 </template>
 
 <style scoped></style>

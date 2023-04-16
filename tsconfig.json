@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "ESNext", // 打包模块类型ESNext
     "declaration": false, // 默认不要声明文件
-    "noImplicitAny": false, // 支持类型不标注可以默认any
+    "noImplicitAny": true, // 支持类型不标注可以默认any
     "removeComments": true, // 删除注释
     "moduleResolution": "node", // 按照node模块来解析
     "esModuleInterop": true, // 支持es6,commonjs模块
@@ -20,7 +20,8 @@
     "forceConsistentCasingInFileNames": true, // 强制区分大小写
     "resolveJsonModule": true, // 解析json模块
     "strict": true, // 是否启动严格模式
-    "skipLibCheck": true // 跳过类库检测
+    "skipLibCheck": true, // 跳过类库检测
+    "types": ["unplugin-vue-define-options/macros-global" /* ... */]
   },
   "exclude": [
     // 排除掉哪些类库
