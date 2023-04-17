@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AddCircleSharp } from '@vicons/ionicons5';
+import { AddCircleSharp } from '@vicons/ionicons5'
 </script>
 
 <template>
