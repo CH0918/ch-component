@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -C play dev",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "dev:doc": "pnpm -C docs dev"
   },
   "keywords": [],
   "author": "",
