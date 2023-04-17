@@ -1,0 +1,41 @@
+// 将config中所有的变量，mixin都导进来
+@use 'config' as *;
+// 将config中的变量，mixin中转出去给其他文件用
+@forward 'config';
+
+// .c-button
+@mixin b($block) {
+  $B: $namespace + '-' + $block;
+  .#{$B} {
+    // @include b(xx) {}花括号中传进来的内容
+    @content;
+  }
+}
+
+// .c-button.is-xxx
+@mixin when($state) {
+  // 这个选择器独立出来，只要有这个选择器都会有设置的样式
+  @at-root {
+    &.#{$state-prefix + $state} {
+      @content;
+    }
+  }
+}
+
+// &--primary => .c-button--primary
+@mixin m($modifier) {
+  @at-root {
+    #{& + $modifier-separator + $modifier} {
+      @content;
+    }
+  }
+}
+
+// &__element => .c-button__element
+@mixin e($element) {
+  @at-root {
+    #{& + $element-separator + $element} {
+      @content;
+    }
+  }
+}

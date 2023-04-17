@@ -13,7 +13,7 @@ import { iconProps } from './icon';
 defineOptions({
   name: 'CIcon',
 });
-const bem = createNamespace('c-icon');
+const bem = createNamespace('icon');
 const props = defineProps(iconProps);
 
 const style = computed(() => {
