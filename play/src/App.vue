@@ -1,5 +1,29 @@
 <script setup lang="ts">
 import { AddCircleSharp } from '@vicons/ionicons5'
+import { ref } from 'vue'
+import { TreeOption } from '@ch/components/tree'
+
+function createData(level = 4, parentKey = ''): any {
+  if (!level) return []
+  const arr = new Array(20 - level).fill(0)
+  return arr.map((_, idx: number) => {
+    const key = parentKey + level + idx
+    return {
+      xx: createLabel(level), // 显示的内容
+      key, // 为了唯一性
+      children: createData(level - 1, key) // 孩子
+    }
+  })
+}
+function createLabel(level: number): string {
+  if (level === 4) return '道生一'
+  if (level === 3) return '一生二'
+  if (level === 2) return '二生三'
+  if (level === 1) return '三生万物'
+  return ''
+}
+
+const data = ref<TreeOption[]>(createData())
 </script>
 
 <template>
@@ -12,14 +36,13 @@ import { AddCircleSharp } from '@vicons/ionicons5'
   <c-icon size="16" color="red">
     <AddCircleSharp></AddCircleSharp>
   </c-icon>
-  <div class="test">test...</div>
-  <div class="button">11</div>
-  <div class="parent">
-    <div class="child">
-      222
-      <div class="other-child">333</div>
-    </div>
-  </div>
+  <c-tree
+    label-filed="xx"
+    key-filed="key"
+    children-filed="children"
+    :data="data"
+    :default-expanded-keys="[40, '4030', '4030210', 41]"
+  ></c-tree>
 </template>
 
 <style scoped lang="scss">
