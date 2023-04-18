@@ -6,6 +6,7 @@ export interface TreeNode extends Required<TreeOption> {
   level: number
   // isLeaf: boolean
   children: TreeNode[]
+  rawNode: TreeOption
 }
 export interface TreeOption {
   label?: Key
@@ -34,6 +35,9 @@ export const treeProps = {
   defaultExpandedKeys: {
     type: Array as PropType<Key[]>,
     default: () => []
+  },
+  onLoad: {
+    type: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>
   }
 } as const
 
@@ -48,6 +52,10 @@ export const treeNodeProps = {
   expanded: {
     type: Boolean,
     required: true
+  },
+  loadingKeys: {
+    type: Object as PropType<Set<Key>>,
+    default: () => []
   }
 } as const
 export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>
@@ -56,3 +64,5 @@ export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>
 export const treeNodeEvents = {
   toggle: (node: TreeNode) => node
 }
+
+// 树节点懒加载

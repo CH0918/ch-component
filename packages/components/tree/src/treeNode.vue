@@ -7,8 +7,11 @@
         { expanded: !node.isLeaf && expanded }
       ]"
     >
-      <c-icon :size="20" color="blue">
-        <Switcher @click="expandTreeNode(node)"></Switcher>
+      <c-icon v-if="!isLoading" :size="20">
+        <switcher @click="expandTreeNode(node)"></switcher>
+      </c-icon>
+      <c-icon v-else :size="14">
+        <loading></loading>
       </c-icon>
     </span>
     <span>
@@ -18,10 +21,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { treeNodeProps, treeNodeEvents, TreeNode } from './tree'
 import { createNamespace } from '@ch/utils/create'
-import Switcher from './switcher'
-
+import Switcher from './icon/Switcher'
+import Loading from './icon/Loading'
 defineOptions({
   name: 'TreeNode'
 })
@@ -33,6 +38,10 @@ const emit = defineEmits(treeNodeEvents)
 const expandTreeNode = (node: TreeNode) => {
   emit('toggle', node)
 }
+// 是否正在加载
+const isLoading = computed(() => {
+  return props.loadingKeys.has(String(props.node.key))
+})
 </script>
 
 <style scoped></style>

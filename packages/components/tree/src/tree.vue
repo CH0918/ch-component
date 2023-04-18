@@ -5,6 +5,7 @@
       :key="node.key"
       :node="node"
       :expanded="isExpanded(node)"
+      :loadingKeys="loadingKeysRef"
       @toggle="expandTreeNode"
     ></c-tree-node>
   </div>
@@ -43,7 +44,7 @@ const treeOption = createTreeOption(
   props.labelFiled,
   props.childrenFiled
 )
-function createData(
+function normalizedTreeData(
   data: TreeOption[],
   parent: TreeNode | null = null
 ): TreeNode[] {
@@ -56,7 +57,8 @@ function createData(
         label: treeOption.getLabel(node),
         children: [],
         isLeaf: node.isLeaf ?? childrenLen === 0,
-        level: parent ? parent.level + 1 : 0
+        level: parent ? parent.level + 1 : 0,
+        rawNode: node
       }
       if (childrenLen > 0) {
         treeNode.children = traversal(children, treeNode)
@@ -72,7 +74,7 @@ watch(
   () => props.data,
   (data: TreeOption[]) => {
     console.log('data = ', data)
-    tree.value = createData(data)
+    tree.value = normalizedTreeData(data)
     console.log('tree.value = ', tree.value)
   },
   {
@@ -124,16 +126,44 @@ const collepse = (node: TreeNode) => {
 }
 const expand = (node: TreeNode) => {
   defaultExpandedKeys.value.add(String(node.key))
+  triggleLoading(node)
 }
+
+// 存储正在加载的节点
+const loadingKeysRef = ref(new Set<Key>())
 const expandTreeNode = (node: TreeNode) => {
   // 是否已经处于展开状态
   const isExpanded = defaultExpandedKeys.value.has(String(node.key))
-  if (isExpanded) {
-    // 收缩
+  const isLoading = loadingKeysRef.value.has(String(node.key))
+
+  if (isExpanded && !isLoading) {
+    // 不是展开状态并且不是正在loading则收缩
     collepse(node)
   } else {
     // 展开
     expand(node)
+  }
+}
+
+// 动态加载树节点
+function triggleLoading(node: TreeNode) {
+  // debugger
+  if (!node.children.length && !node.isLeaf) {
+    // 节点本身没有子节点，并且用户自己定义节点不是叶子节点，这时候就是用户想动态加载数据了
+    const loadingKeys = loadingKeysRef.value
+    if (!loadingKeys.has(String(node.key))) {
+      // 防止重复加载
+      loadingKeys.add(String(node.key))
+      if (props.onLoad) {
+        // 执行用户传进来的动态加载函数
+        props.onLoad(node.rawNode).then((children: TreeOption[]) => {
+          node.rawNode.children = children
+          node.children = normalizedTreeData(children, node)
+          // 加载完之后移除正在加载的队列
+          loadingKeys.delete(String(node.key))
+        })
+      }
+    }
   }
 }
 </script>
