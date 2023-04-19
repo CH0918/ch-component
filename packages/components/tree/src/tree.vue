@@ -1,16 +1,20 @@
 <template>
   <div :class="bem.b()">
-    <c-tree-node
-      v-for="node in flattenTree"
-      :key="node.key"
-      :node="node"
-      :expanded="isExpanded(node)"
-      :loadingKeys="loadingKeysRef"
-      :selectedKeys="selectedKeys"
-      :show-checkbox="showCheckbox"
-      @toggle="expandTreeNode"
-      @select="handleSelect"
-    ></c-tree-node>
+    <c-vitual-list :items="flattenTree">
+      <template #default="{ node }">
+        <c-tree-node
+          :key="node.key"
+          :node="node"
+          :expanded="isExpanded(node)"
+          :loadingKeys="loadingKeysRef"
+          :selectedKeys="selectedKeys"
+          :show-checkbox="showCheckbox"
+          @toggle="expandTreeNode"
+          @select="handleSelect"
+        ></c-tree-node>
+      </template>
+    </c-vitual-list>
+
     <!-- <slot :node="{ key: 1, label: 'label11' }"></slot> -->
   </div>
 </template>
@@ -28,6 +32,7 @@ import {
 } from './tree'
 import { createNamespace } from '@ch/utils/create'
 import CTreeNode from './treeNode.vue'
+import CVitualList from './../../virtual-list/src/virtualList'
 
 defineOptions({
   name: 'CTree'
@@ -85,9 +90,7 @@ function normalizedTreeData(
 watch(
   () => props.data,
   (data: TreeOption[]) => {
-    console.log('data = ', data)
     tree.value = normalizedTreeData(data)
-    console.log('tree.value = ', tree.value)
   },
   {
     immediate: true

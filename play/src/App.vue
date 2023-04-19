@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AddCircleSharp } from '@vicons/ionicons5'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Key, TreeOption } from '@ch/components/tree'
 
 function createData(level = 4, parentKey = ''): any {
@@ -96,6 +96,7 @@ const checkKeys = ref<Key[]>([])
 //     ]
 //   }
 // ])
+const virtualListData = new Array(100).fill(1).map(i => ++i)
 </script>
 
 <template>
@@ -125,9 +126,16 @@ const checkKeys = ref<Key[]>([])
   ></c-tree> -->
   <!-- <c-tree :data="data"></c-tree> -->
 
-  <c-tree :data="data" labelFiled="xx">
+  <!-- <c-tree :data="data" labelFiled="xx">
     <template #default="{ node }"> {{ node.key }}-{{ node.label }}</template>
-  </c-tree>
+  </c-tree> -->
+  <c-virtual-list :items="virtualListData" :size="20" :max="30">
+    <template #default="{ node }">
+      <div style="height: 20px">
+        {{ node }}
+      </div>
+    </template>
+  </c-virtual-list>
 </template>
 
 <style scoped lang="scss">

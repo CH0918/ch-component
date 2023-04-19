@@ -7,7 +7,6 @@ export default defineComponent({
   setup(props) {
     const tree = inject(treeInjectionKey)
     const defaultSlot = tree?.slots.default
-    console.log('node ', props.node)
     return () => {
       const node = props.node
       return defaultSlot ? defaultSlot({ node }) : '11'

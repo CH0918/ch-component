@@ -1,0 +1,12 @@
+@use 'mixins/mixins.scss' as *;
+@include b('virtual-list') {
+  overflow: auto;
+  position: relative;
+  @include e('scroll-list') {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
