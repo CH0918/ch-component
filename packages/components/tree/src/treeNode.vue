@@ -23,7 +23,7 @@
       </c-icon>
     </span>
     <span :class="bem.e('label')">
-      {{ node.label }}
+      <tree-node-content :node="node"> </tree-node-content>
     </span>
   </div>
 </template>
@@ -35,6 +35,7 @@ import { treeNodeProps, treeNodeEvents, TreeNode } from './tree'
 import { createNamespace } from '@ch/utils/create'
 import Switcher from './icon/Switcher'
 import Loading from './icon/Loading'
+import treeNodeContent from './treeNodeContent'
 
 defineOptions({
   name: 'TreeNode'
@@ -59,8 +60,6 @@ const select = (node: TreeNode) => {
 }
 // 是否选中
 const isSelected = computed(() => {
-  console.log('111', props.selectedKeys)
-  console.log('22', String(props.node.key))
   return props.selectedKeys.includes(String(props.node.key))
 })
 </script>

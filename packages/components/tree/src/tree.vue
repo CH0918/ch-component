@@ -11,13 +11,21 @@
       @toggle="expandTreeNode"
       @select="handleSelect"
     ></c-tree-node>
+    <!-- <slot :node="{ key: 1, label: 'label11' }"></slot> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, useSlots, provide } from 'vue'
 
-import { treeProps, type TreeNode, TreeOption, Key, treeEvents } from './tree'
+import {
+  treeProps,
+  type TreeNode,
+  TreeOption,
+  Key,
+  treeEvents,
+  treeInjectionKey
+} from './tree'
 import { createNamespace } from '@ch/utils/create'
 import CTreeNode from './treeNode.vue'
 
@@ -209,6 +217,15 @@ const handleSelect = (node: TreeNode) => {
   }
   emit('update:selectedKeys', keys)
 }
+
+// 自定义节点内容
+// console.log(
+//   'slot = ',
+//   useSlots().default!({ node: { label: '节点1', key: 1 } })
+// )
+provide(treeInjectionKey, {
+  slots: useSlots()
+})
 </script>
 
 <style scoped></style>

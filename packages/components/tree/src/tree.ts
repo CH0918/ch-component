@@ -1,4 +1,4 @@
-import { ExtractPropTypes, PropType } from 'vue'
+import { ExtractPropTypes, InjectionKey, PropType, SetupContext } from 'vue'
 
 export type Key = string | number
 
@@ -101,3 +101,15 @@ export const treeEvents = {
   'update:selectedKeys': (keys: Key[]) => keys,
   update: (keys: Key[]) => keys
 }
+
+// 自定义节点
+export interface TreeContext {
+  slots: SetupContext['slots']
+}
+export const treeInjectionKey: InjectionKey<TreeContext> = Symbol()
+export const treeNodeContentProps = {
+  node: {
+    type: Object as PropType<TreeNode>,
+    required: true
+  }
+} as const
