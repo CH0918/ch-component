@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AddCircleSharp } from '@vicons/ionicons5'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Key, TreeOption } from '@ch/components/tree'
 
 // function createData(level = 4, parentKey = ''): any {
@@ -49,21 +49,53 @@ function nextLabel(currentLabel?: Key): Key {
   }
   return ''
 }
-const data = ref<TreeOption[]>(createData())
+// const data = ref<TreeOption[]>(createData())
 
-const handleLoad = (node: TreeOption) => {
-  return new Promise<TreeOption[]>(resolve => {
-    setTimeout(() => {
-      resolve([
-        {
-          label: nextLabel(node.label),
-          key: node.key + String(nextLabel(node.label)),
-          isLeaf: false
-        }
-      ])
-    }, 2000)
-  })
-}
+// const handleLoad = (node: TreeOption) => {
+//   return new Promise<TreeOption[]>(resolve => {
+//     setTimeout(() => {
+//       resolve([
+//         {
+//           label: nextLabel(node.label),
+//           key: node.key + String(nextLabel(node.label)),
+//           isLeaf: false
+//         }
+//       ])
+//     }, 2000)
+//   })
+// }
+
+const selectedKeys = ref<Key[]>(['1'])
+
+const checkKeys = ref<Key[]>([])
+
+const data = ref<TreeOption[]>([
+  {
+    key: '0',
+    label: '0',
+    children: [
+      {
+        key: '0-0',
+        label: '0-0'
+      },
+      {
+        disabled: true,
+        key: '0-1',
+        label: '0-1',
+        children: [
+          {
+            label: '0-1-0',
+            key: '0-1-0'
+          },
+          {
+            label: '0-1-1',
+            key: '0-1-1'
+          }
+        ]
+      }
+    ]
+  }
+])
 </script>
 
 <template>
@@ -83,7 +115,15 @@ const handleLoad = (node: TreeOption) => {
     :data="data"
     :default-expanded-keys="[40, '4030', '4030210', 41]"
   ></c-tree> -->
-  <c-tree :data="data" :on-load="handleLoad"></c-tree>
+  <!-- <c-tree :data="data" :on-load="handleLoad"></c-tree> -->
+  <!-- {{ selectedKeys }}
+  <c-tree
+    v-model:selectedKeys="selectedKeys"
+    :data="data"
+    selectable
+    multiple
+  ></c-tree> -->
+  <c-tree :data="data"></c-tree>
 </template>
 
 <style scoped lang="scss">

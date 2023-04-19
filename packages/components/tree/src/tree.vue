@@ -6,7 +6,10 @@
       :node="node"
       :expanded="isExpanded(node)"
       :loadingKeys="loadingKeysRef"
+      :selectedKeys="selectedKeys"
+      :show-checkbox="showCheckbox"
       @toggle="expandTreeNode"
+      @select="handleSelect"
     ></c-tree-node>
   </div>
 </template>
@@ -14,7 +17,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 
-import { treeProps, type TreeNode, TreeOption, Key } from './tree'
+import { treeProps, type TreeNode, TreeOption, Key, treeEvents } from './tree'
 import { createNamespace } from '@ch/utils/create'
 import CTreeNode from './treeNode.vue'
 
@@ -58,7 +61,8 @@ function normalizedTreeData(
         children: [],
         isLeaf: node.isLeaf ?? childrenLen === 0,
         level: parent ? parent.level + 1 : 0,
-        rawNode: node
+        rawNode: node,
+        disabled: !!node.disabled
       }
       if (childrenLen > 0) {
         treeNode.children = traversal(children, treeNode)
@@ -147,14 +151,13 @@ const expandTreeNode = (node: TreeNode) => {
 
 // 动态加载树节点
 function triggleLoading(node: TreeNode) {
-  // debugger
   if (!node.children.length && !node.isLeaf) {
     // 节点本身没有子节点，并且用户自己定义节点不是叶子节点，这时候就是用户想动态加载数据了
     const loadingKeys = loadingKeysRef.value
     if (!loadingKeys.has(String(node.key))) {
       // 防止重复加载
-      loadingKeys.add(String(node.key))
       if (props.onLoad) {
+        loadingKeys.add(String(node.key))
         // 执行用户传进来的动态加载函数
         props.onLoad(node.rawNode).then((children: TreeOption[]) => {
           node.rawNode.children = children
@@ -165,6 +168,46 @@ function triggleLoading(node: TreeNode) {
       }
     }
   }
+}
+
+const emit = defineEmits(treeEvents)
+// 多选节点
+const selectedKeys = ref<Key[]>([])
+let keys = selectedKeys.value
+// 初始化数据
+watch(
+  () => props.selectedKeys,
+  value => {
+    if (value) {
+      keys = value.map(String)
+      selectedKeys.value = value.map(String)
+    }
+  },
+  {
+    immediate: true
+  }
+)
+const handleSelect = (node: TreeNode) => {
+  if (!props.selectable) return
+  const nodeKey = String(node.key)
+  const index = keys.indexOf(nodeKey)
+
+  if (props.multiple) {
+    // 支持多选
+    if (index > -1) {
+      keys.splice(index, 1)
+    } else {
+      keys.push(nodeKey)
+    }
+  } else {
+    // 单选
+    if (index > -1) {
+      keys = []
+    } else {
+      keys.push(nodeKey)
+    }
+  }
+  emit('update:selectedKeys', keys)
 }
 </script>
 

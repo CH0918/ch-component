@@ -7,6 +7,7 @@ export interface TreeNode extends Required<TreeOption> {
   // isLeaf: boolean
   children: TreeNode[]
   rawNode: TreeOption
+  disabled: boolean
 }
 export interface TreeOption {
   label?: Key
@@ -36,6 +37,24 @@ export const treeProps = {
     type: Array as PropType<Key[]>,
     default: () => []
   },
+  multiple: {
+    type: Boolean
+  },
+  selectable: {
+    type: Boolean,
+    default: false
+  },
+  selectedKeys: {
+    type: Array as PropType<Key[]>
+  },
+  showCheckbox: {
+    type: Boolean,
+    default: false
+  },
+  defaultCheckedKeys: {
+    type: Array as PropType<Key[]>,
+    default: () => []
+  },
   onLoad: {
     type: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>
   }
@@ -56,13 +75,29 @@ export const treeNodeProps = {
   loadingKeys: {
     type: Object as PropType<Set<Key>>,
     default: () => []
-  }
+  },
+  selectedKeys: {
+    type: Object as PropType<Key[]>,
+    default: () => []
+  },
+  showCheckbox: {
+    type: Boolean,
+    default: false
+  },
+  checked: Boolean,
+  disabled: Boolean
 } as const
 export type TreeNodeProps = ExtractPropTypes<typeof treeNodeProps>
 
-// 展开树节点
 export const treeNodeEvents = {
-  toggle: (node: TreeNode) => node
+  // 展开树节点
+  toggle: (node: TreeNode) => node,
+  select: (node: TreeNode) => node
 }
 
-// 树节点懒加载
+// 树事件
+export const treeEvents = {
+  // 双向绑定树
+  'update:selectedKeys': (keys: Key[]) => keys,
+  update: (keys: Key[]) => keys
+}

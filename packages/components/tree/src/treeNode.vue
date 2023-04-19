@@ -1,5 +1,13 @@
 <template>
-  <div :class="bem.b()" :style="{ marginLeft: `${16 * node.level}px` }">
+  <div
+    :class="[
+      bem.b(),
+      bem.is('selected', isSelected),
+      bem.is('disabled', node.disabled)
+    ]"
+    :style="{ marginLeft: `${16 * node.level}px` }"
+    @click.stop="select(node)"
+  >
     <span
       :class="[
         bem.e('expand-icon'),
@@ -14,7 +22,7 @@
         <loading></loading>
       </c-icon>
     </span>
-    <span>
+    <span :class="bem.e('label')">
       {{ node.label }}
     </span>
   </div>
@@ -27,6 +35,7 @@ import { treeNodeProps, treeNodeEvents, TreeNode } from './tree'
 import { createNamespace } from '@ch/utils/create'
 import Switcher from './icon/Switcher'
 import Loading from './icon/Loading'
+
 defineOptions({
   name: 'TreeNode'
 })
@@ -41,6 +50,18 @@ const expandTreeNode = (node: TreeNode) => {
 // 是否正在加载
 const isLoading = computed(() => {
   return props.loadingKeys.has(String(props.node.key))
+})
+
+// 点击选择节点
+const select = (node: TreeNode) => {
+  if (props.disabled) return
+  emit('select', node)
+}
+// 是否选中
+const isSelected = computed(() => {
+  console.log('111', props.selectedKeys)
+  console.log('22', String(props.node.key))
+  return props.selectedKeys.includes(String(props.node.key))
 })
 </script>
 

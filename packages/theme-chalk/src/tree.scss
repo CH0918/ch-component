@@ -4,6 +4,9 @@
   width: 100%;
 }
 @include b('tree-node') {
+  @include when(selected) {
+    background-color: #e7f5ee;
+  }
   padding: 5px 0;
   font-size: 14px;
   &:hover {
@@ -21,5 +24,10 @@
       fill: transparent;
       cursor: default;
     }
+  }
+  &.is-disabled {
+    cursor: not-allowed;
+    flex: 1;
+    color: #cdcdcd;
   }
 }
